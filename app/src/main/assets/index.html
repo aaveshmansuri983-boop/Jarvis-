@@ -22,13 +22,75 @@
 .avatar-spark{position:absolute;width:7px;height:7px;border-radius:50%;background:#7df6ff;box-shadow:0 0 14px #7df6ff}
 .avatar-spark.one{top:45px;left:24px}.avatar-spark.two{right:20px;top:100px}.avatar-spark.three{bottom:25px;left:55px}
 
+
+/* JARVIS ULTIMATE dashboard */
+body{background:radial-gradient(ellipse at 50% 18%,#0b2b49 0,#041322 48%,#020812 100%);background-attachment:fixed}
+.shell{max-width:1040px;padding:env(safe-area-inset-top) 22px env(safe-area-inset-bottom)}
+header{height:82px;border-bottom:1px solid #155477;position:relative}
+header:after{content:"";position:absolute;bottom:-1px;left:0;width:42%;height:2px;background:linear-gradient(90deg,#21dfff,transparent);box-shadow:0 0 12px #21dfff}
+.brand b{font-size:24px;letter-spacing:5px;text-shadow:0 0 16px #42dfff88}
+.brand small{font-size:10px;letter-spacing:2.5px}
+.brand:before{content:"✦";display:grid;place-items:center;width:48px;height:48px;border:2px solid #32dfff;border-radius:50%;color:#8ff7ff;font-size:25px;box-shadow:0 0 18px #20dfff77,inset 0 0 15px #20dfff44}
+#status{border:1px solid #1acb91;background:#062a25;border-radius:20px;padding:8px 15px;color:#6dffb4;box-shadow:0 0 14px #00df9a33}
+.topnav{display:flex;gap:8px;justify-content:space-between;margin:12px 0 8px;padding:6px;border:1px solid #123d5a;border-radius:20px;background:#061a2bcc;box-shadow:0 8px 25px #0005}
+.topnav a{flex:1;text-align:center;text-decoration:none;color:#bdeeff;padding:10px 7px;border-radius:14px;font-size:13px}
+.topnav a:first-child{background:linear-gradient(120deg,#0e6590,#123a63);border:1px solid #39dfff;box-shadow:0 0 15px #19cfff44}
+.dashboard{display:grid;grid-template-columns:158px minmax(0,1fr) 158px;gap:14px;align-items:center}
+.side-tools{display:grid;gap:9px;align-content:center}
+.tool{min-height:59px;border:1px solid #155276;border-radius:17px;background:linear-gradient(145deg,#0b2a42,#061625);color:#d5f6ff;display:flex;align-items:center;gap:10px;padding:9px 11px;text-align:left;font-size:13px;box-shadow:inset 0 0 12px #16c8f411,0 5px 14px #0004}
+.tool .ico{font-size:23px;color:#4deaff;text-shadow:0 0 12px #2bdcff;min-width:25px;text-align:center}
+.tool:active,.quick button:active{transform:scale(.97);border-color:#75f3ff}
+.hero{padding:12px 0 8px;min-width:0}
+.avatar-stage{width:min(100%,330px);height:315px}
+.avatar-ring{width:290px;height:290px;border-width:2px;box-shadow:0 0 42px #20c9f677,inset 0 0 30px #20c9f633}
+.anime-avatar{width:min(100%,285px);height:315px}
+h1{font-size:clamp(23px,3.3vw,34px);text-shadow:0 0 17px #22cfff66}
+.hero>p{font-size:15px}
+.wave{height:34px;display:flex;justify-content:center;align-items:center;gap:4px;margin:10px auto 12px}
+.wave i{display:block;width:4px;height:9px;border-radius:4px;background:#1deaff;box-shadow:0 0 9px #1deaff;animation:wave 1s ease-in-out infinite alternate}
+.wave i:nth-child(3n){animation-delay:.2s}.wave i:nth-child(2n){animation-delay:.4s}
+@keyframes wave{to{height:28px}}
+.hero .tiny{max-width:440px;margin:10px auto;color:#6f9cb4;line-height:1.5}
+.mic{cursor:pointer}
+#listen{min-width:190px}
+#listen:before{content:"";display:inline-block}
+#chat{max-height:230px;min-height:120px;border:1px solid #123e5a;border-radius:20px;padding:9px 14px;background:#061827aa;box-shadow:inset 0 0 20px #0c6a8d17}
+.msg{font-size:14px}
+.composer{padding:12px 0 8px}
+.composer input{border-color:#1d6481;background:#061a2a}
+.composer button{cursor:pointer;box-shadow:0 0 15px #1acde955}
+.quick{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;padding:8px 0 14px}
+.quick button{min-height:65px;border-radius:15px;background:linear-gradient(145deg,#0c2d46,#071a2a);border-color:#155b7b;color:#d6f7ff;box-shadow:inset 0 0 12px #20cfff12}
+.bottom-tools{display:flex;justify-content:space-around;gap:8px;border-top:1px solid #145071;padding:13px 0 8px;margin-top:6px}
+.bottom-tools a{color:#aeeaff;text-decoration:none;font-size:12px;text-align:center;min-width:50px}
+.bottom-tools span{display:block;font-size:21px;margin-bottom:3px;color:#5ceaff}
+footer{font-size:10px}
+@media(max-width:760px){
+ .shell{padding-left:13px;padding-right:13px}
+ .dashboard{grid-template-columns:minmax(0,1fr);gap:0}
+ .side-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:8px 0}
+ .side-tools.right{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .tool{min-height:54px;justify-content:center;flex-direction:column;text-align:center;gap:2px;padding:6px 3px;font-size:10px;border-radius:13px}
+ .tool .ico{font-size:19px}
+ .hero{padding:8px 0}
+ .avatar-stage{height:285px}
+ .avatar-ring{width:255px;height:255px}
+ .anime-avatar{height:285px;width:245px}
+ .topnav a{font-size:11px;padding:9px 3px}
+ .brand b{font-size:20px}
+ .brand small{font-size:8px}
+ .brand:before{width:40px;height:40px}
+}
+@media(max-width:390px){.side-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.quick{grid-template-columns:repeat(3,minmax(0,1fr))}.topnav a{font-size:10px}}
+
 </style>
 </head>
 <body>
 <div class="shell">
-<header><div class="brand"><span class="dot"></span><div><b>J.A.R.V.I.S</b><small>PERSONAL AI • ZERO COST</small></div></div><span id="status">READY</span></header>
+<header><div class="brand"><span class="dot"></span><div><b>J.A.R.V.I.S</b><small>PERSONAL AI ASSISTANT • ZERO COST • v5.0</small></div></div><span id="status">READY</span></header>
+<nav class="topnav"><a href="#">⌂ &nbsp;होम</a><a href="#chat">☏ &nbsp;चैट</a><a href="#quickTools">▦ &nbsp;टूल्स</a><a href="#quickTools">◇ &nbsp;AI मॉडल</a><a href="#wake">⚙ &nbsp;सेटिंग्स</a></nav>
 <main>
-<section class="hero"><div class="avatar-stage"><div class="avatar-ring"></div><span class="avatar-spark one"></span><span class="avatar-spark two"></span><span class="avatar-spark three"></span><svg id="jarvisAvatar" class="anime-avatar" viewBox="0 0 260 310" role="img" aria-label="3D anime Jarvis hologram character">
+<div class="dashboard"><aside class="side-tools left"><button class="tool" data-cmd="मदद"><span class="ico">▤</span>AI चैट</button><button class="tool" data-cmd="माइक्रोफोन से बोलना शुरू करें"><span class="ico">♩</span>वॉइस कमांड</button><button class="tool" data-cmd="यूट्यूब खोलो"><span class="ico">▦</span>ऐप कंट्रोल</button><button class="tool" data-cmd="समय बताओ"><span class="ico">▣</span>फोन टूल्स</button><button class="tool" data-cmd="आज की तारीख बताओ"><span class="ico">▱</span>नोट्स / तारीख</button><button class="tool" data-cmd="गूगल खोलो"><span class="ico">◎</span>वेब सर्च</button></aside><section class="hero"><div class="avatar-stage"><div class="avatar-ring"></div><span class="avatar-spark one"></span><span class="avatar-spark two"></span><span class="avatar-spark three"></span><svg id="jarvisAvatar" class="anime-avatar" viewBox="0 0 260 310" role="img" aria-label="3D anime Jarvis hologram character">
 <defs>
  <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f2ffff"/><stop offset=".28" stop-color="#65edff"/><stop offset=".72" stop-color="#159bc9"/><stop offset="1" stop-color="#064b78"/></linearGradient>
  <linearGradient id="skin" x1="0" y1="0" x2=".2" y2="1"><stop stop-color="#f5dcd8"/><stop offset=".55" stop-color="#c6e3ec"/><stop offset="1" stop-color="#76b9d2"/></linearGradient>
@@ -58,11 +120,12 @@
 <circle cx="130" cy="255" r="15" fill="#07324e" stroke="#6cf3ff" stroke-width="3" filter="url(#softGlow)"/>
 <circle cx="130" cy="255" r="8" fill="#9cffff"/>
 <path d="M120 255 H140 M130 245 V265" stroke="#eaffff" stroke-width="2"/>
-</svg></div><h1>नमस्ते, मैं Jarvis हूँ</h1><p id="hint">मुझसे बोलकर या लिखकर बात करें</p><button id="listen" class="mic"><span>🎙</span> बोलना शुरू करें</button><div style="height:10px"></div><button id="wake" class="mic" style="background:linear-gradient(120deg,#174b38,#123c35);border-color:#54d69b"><span>🟢</span> Hey Jarvis मोड बंद है</button><div class="tiny">ऐप खुला रहने पर “Hey Jarvis” बोलकर जगाएँ। स्क्रीन लॉक/ऐप बंद होने पर wake word की गारंटी नहीं।</div></section>
+</svg></div><h1>नमस्ते, मैं Jarvis हूँ</h1><p id="hint">मुझसे बोलकर या लिखकर बात करें</p><button id="listen" class="mic"><span>🎙</span> बोलना शुरू करें</button><div style="height:10px"></div><button id="wake" class="mic" style="background:linear-gradient(120deg,#174b38,#123c35);border-color:#54d69b"><span>🟢</span> Hey Jarvis मोड बंद है</button><div class="tiny">ऐप खुला रहने पर “Hey Jarvis” बोलकर जगाएँ। स्क्रीन लॉक/ऐप बंद होने पर wake word की गारंटी नहीं।</div></section><aside class="side-tools right"><button class="tool" data-cmd="मौसम बताओ"><span class="ico">◉</span>Jarvis Vision</button><button class="tool" data-cmd="मदद"><span class="ico">▣</span>स्क्रीन रीड</button><button class="tool" data-cmd="मदद"><span class="ico">⚙</span>ऑटोमेशन</button><button class="tool" data-cmd="समय बताओ"><span class="ico">▥</span>सिस्टम मॉनिटर</button><button class="tool" data-cmd="मदद"><span class="ico">✧</span>AI टूलबॉक्स</button><button class="tool" data-cmd="मदद"><span class="ico">☁</span>ऑफलाइन मोड</button></aside></div>
 <section class="chat" id="chat"><div class="msg bot">नमस्ते! मैं तैयार हूँ। कहिए, क्या करना है?</div></section>
 <div class="composer"><input id="input" placeholder="यहाँ अपना आदेश लिखें…" autocomplete="off"><button id="send">➤</button></div>
-<section class="quick"><button data-cmd="अभी कितने बजे हैं?">🕒 समय</button><button data-cmd="आज की तारीख बताओ">📅 तारीख</button><button data-cmd="मौसम बताओ">🌤 मौसम</button><button data-cmd="यूट्यूब खोलो">▶ YouTube</button><button data-cmd="गूगल खोलो">🔎 Google</button></section>
-</main><footer>JARVIS ZERO • कोई API key या subscription नहीं</footer>
+<section class="quick" id="quickTools"><button data-cmd="अभी कितने बजे हैं?">🕒<br>समय</button><button data-cmd="आज की तारीख बताओ">📅<br>तारीख</button><button data-cmd="मौसम बताओ">🌤<br>मौसम</button><button data-cmd="यूट्यूब खोलो">▶<br>YouTube</button><button data-cmd="गूगल खोलो">🔎<br>वेब सर्च</button></section>
+<div class="bottom-tools"><a href="#quickTools"><span>♫</span>म्यूजिक</a><a href="#quickTools"><span>▷</span>वीडियो</a><a href="#quickTools"><span>▣</span>कैमरा</a><a href="#quickTools"><span>▧</span>गैलरी</a><a href="#quickTools"><span>⇩</span>डाउनलोड</a><a href="#wake"><span>⏻</span>पावर</a></div>
+</main><footer>JARVIS ZERO • FUTURISTIC PERSONAL ASSISTANT • v5.0</footer>
 </div><script>
 const $=s=>document.querySelector(s), chat=$('#chat'), input=$('#input'), status=$('#status'), listen=$('#listen');
 function say(text){try{const face=$('#jarvisAvatar');if(face)face.classList.add('speaking');if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='hi-IN';u.rate=1;u.onend=()=>face&&face.classList.remove('speaking');u.onerror=()=>face&&face.classList.remove('speaking');speechSynthesis.speak(u)}catch(e){const face=$('#jarvisAvatar');if(face)face.classList.remove('speaking')}}
