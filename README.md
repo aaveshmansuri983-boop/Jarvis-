@@ -3,8 +3,8 @@
 Android APK build is configured with GitHub Actions.
 
 ## Current interface
-- Futuristic JARVIS dashboard with responsive mobile layout
-- Animated anime-style hologram avatar
+- Futuristic JARVIS NOVA dashboard with responsive Android-first layout
+- Photorealistic holographic assistant avatar (no cartoon/vector character)
 - Home, chat, tools, and settings navigation
 - Quick actions for time, date, weather search, YouTube, and Google
 - Hindi text chat and browser speech-recognition controls
