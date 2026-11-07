@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111f"><title>JARVIS ZERO</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+<header><div class="brand"><span class="dot"></span><div><b>J.A.R.V.I.S</b><small>PERSONAL AI • ZERO COST</small></div></div><span id="status">READY</span></header>
+<main>
+<section class="hero"><div class="orb"><div class="core"></div><i></i><i></i><i></i></div><h1>नमस्ते, मैं Jarvis हूँ</h1><p id="hint">मुझसे बोलकर या लिखकर बात करें</p><button id="listen" class="mic"><span>🎙</span> बोलना शुरू करें</button><div style="height:10px"></div><button id="wake" class="mic" style="background:linear-gradient(120deg,#174b38,#123c35);border-color:#54d69b"><span>🟢</span> Hey Jarvis मोड बंद है</button><div class="tiny">ऐप खुला रहने पर “Hey Jarvis” बोलकर जगाएँ। स्क्रीन लॉक/ऐप बंद होने पर wake word की गारंटी नहीं।</div></section>
+<section class="chat" id="chat"><div class="msg bot">नमस्ते! मैं तैयार हूँ। कहिए, क्या करना है?</div></section>
+<div class="composer"><input id="input" placeholder="यहाँ अपना आदेश लिखें…" autocomplete="off"><button id="send">➤</button></div>
+<section class="quick"><button data-cmd="अभी कितने बजे हैं?">🕒 समय</button><button data-cmd="आज की तारीख बताओ">📅 तारीख</button><button data-cmd="मौसम बताओ">🌤 मौसम</button><button data-cmd="यूट्यूब खोलो">▶ YouTube</button><button data-cmd="गूगल खोलो">🔎 Google</button></section>
+</main><footer>JARVIS ZERO • कोई API key या subscription नहीं</footer>
+</div><script src="app.js"></script>
+</body></html>
