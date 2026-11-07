@@ -4,6 +4,8 @@
     <application
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:label="Jarvis Zero"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:usesCleartextTraffic="true"
         android:hardwareAccelerated="true">
         <activity
