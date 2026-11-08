@@ -3,6 +3,10 @@ package com.jarvis.zero;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.content.ClipboardManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -33,6 +37,8 @@ public class MainActivity extends Activity {
     private PermissionRequest pendingRequest;
     private GoogleSignInClient googleClient;
     private static final int GOOGLE_SIGN_IN = 72;
+    private static final int WHATSAPP_CONTACT_PICK = 73;
+    private String pendingWhatsAppMessage = "";
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -108,8 +114,35 @@ public class MainActivity extends Activity {
         }).start();
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == WHATSAPP_CONTACT_PICK) {
+            if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+                String phone = "";
+                try (Cursor cursor = getContentResolver().query(data.getData(),
+                        new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) phone = cursor.getString(0);
+                } catch (Exception ignored) { }
+                String digits = phone == null ? "" : phone.replaceAll("[^0-9]", "");
+                if (digits.startsWith("0")) digits = digits.substring(1);
+                if (digits.length() == 10) digits = "91" + digits;
+                if (digits.length() < 10) {
+                    whatsappResult(false, "Selected contact ka valid phone number nahi mila.");
+                } else {
+                    try {
+                        String url = "https://wa.me/" + digits + "?text=" + URLEncoder.encode(pendingWhatsAppMessage, "UTF-8");
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                        whatsappResult(true, "WhatsApp chat khul gayi. Message bhejne ke liye WhatsApp mein Send dabayein.");
+                    } catch (Exception e) {
+                        whatsappResult(false, "WhatsApp open nahi hua. Kya WhatsApp installed hai?");
+                    }
+                }
+            } else {
+                whatsappResult(false, "Contact selection cancel kar di.");
+            }
+            pendingWhatsAppMessage = "";
+            return;
+        }
         if (requestCode == GOOGLE_SIGN_IN) {
             if (resultCode != RESULT_OK || data == null) {
                 authResult(false, "Google sign-in cancel hua ya screen se response nahi mila. Dobara try karein.");
@@ -121,13 +154,32 @@ public class MainActivity extends Activity {
                 if (account.getIdToken() == null) throw new Exception("Google ID token missing. OAuth setup check karein.");
                 verifyGoogleToken(account.getIdToken());
             } catch (Exception e) {
-                authResult(false, e.getMessage() == null ? "Google sign-in cancelled." : e.getMessage());
+                String detail = e instanceof ApiException ? "Google sign-in error (status " + ((ApiException)e).getStatusCode() + "). Check Android OAuth client package com.jarvis.zero and SHA-1 fingerprint in Google Cloud." : (e.getMessage() == null ? "Google sign-in cancelled." : e.getMessage());
+                authResult(false, detail);
             }
         }
     }
 
+    private void whatsappResult(boolean ok, String message) {
+        if (web != null) web.evaluateJavascript("window.onJarvisWhatsAppResult(" + ok + "," +
+            JSONObject.quote(message) + ")", null);
+    }
+
     private class CloudAiBridge {
 
+
+        @JavascriptInterface
+        public void pickWhatsAppContact(String message) {
+            runOnUiThread(() -> {
+                pendingWhatsAppMessage = message == null ? "" : message;
+                try {
+                    Intent pick = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                    startActivityForResult(pick, WHATSAPP_CONTACT_PICK);
+                } catch (Exception e) {
+                    whatsappResult(false, "Phone Contacts app open nahi ho paayi.");
+                }
+            });
+        }
 
         @JavascriptInterface
         public String getClipboardText() {
