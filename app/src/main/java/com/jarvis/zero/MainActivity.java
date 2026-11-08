@@ -175,11 +175,11 @@ public class MainActivity extends Activity {
                     connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
                     JSONObject body = new JSONObject();
                     body.put("model", model);
-                    body.put("temperature", 0.7);
-                    body.put("max_tokens", 1200);
+                    body.put("temperature", 0.65);
+                    body.put("max_tokens", 1800);
                     JSONArray messages = new JSONArray();
                     messages.put(new JSONObject().put("role", "system").put("content",
-                        "You are Jarvis, a helpful Hindi and Hinglish personal AI assistant. Answer accurately, explain uncertainty, and never claim to perform device actions unless the app confirms them. Be open-minded but do not assist serious harm."));
+                        "You are JARVIS NOVA, the user's capable personal AI assistant. Speak naturally in the user's language, especially Hindi/Hinglish; understand casual spelling, speech-to-text errors, and short follow-ups. Be intelligent, practical, warm, direct, and concise by default, but explain deeply when asked. Use the conversation context to resolve references and remember the current task within this chat. For questions requiring current facts, clearly say when you cannot verify live information; never invent news, prices, sources, device state, or results. Give step-by-step Android guidance when useful. Distinguish advice from actions: never claim you opened apps, changed settings, sent messages, set alarms, accessed files, or controlled the phone unless a connected app/tool explicitly confirms it. If a capability is unavailable, say so and give the safest workable alternative. Ask only one short clarification when essential. Respect the user's privacy and owner-only access; never reveal secrets or ask them to paste API keys into chat. Be open-minded, but do not provide instructions that facilitate serious harm, abuse, or illegal activity."));
                     messages.put(new JSONObject().put("role", "user").put("content", prompt));
                     body.put("messages", messages);
                     byte[] bytes = body.toString().getBytes(StandardCharsets.UTF_8);
