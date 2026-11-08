@@ -95,10 +95,8 @@ public class MainActivity extends Activity {
                 if (!verified || !BuildConfig.GOOGLE_WEB_CLIENT_ID.equals(audience)) {
                     throw new Exception("Google account verification incomplete.");
                 }
-                if (BuildConfig.OWNER_EMAIL.isEmpty() || !BuildConfig.OWNER_EMAIL.equalsIgnoreCase(email)) {
-                    throw new Exception("Ye Google account Jarvis owner account nahi hai.");
-                }
-                runOnUiThread(() -> authResult(true, email));
+                boolean isOwner = !BuildConfig.OWNER_EMAIL.isEmpty() && BuildConfig.OWNER_EMAIL.equalsIgnoreCase(email);
+                runOnUiThread(() -> authResult(true, email + "|" + (isOwner ? "owner" : "free")));
             } catch (Exception e) {
                 String msg = e.getMessage() == null ? "Google sign-in failed." : e.getMessage();
                 runOnUiThread(() -> authResult(false, msg));
