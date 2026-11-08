@@ -16,3 +16,5 @@ Note: this is a zero-cost starter assistant; some controls open browser/app link
 
 ## Planned next update
 Lock-screen time/date and battery answers, optional Hey Jarvis wake-word mode, and privacy-safe background voice support are documented in [NEXT_UPDATE_LOCK_SCREEN.md](NEXT_UPDATE_LOCK_SCREEN.md). These are planned only and are not part of the current APK yet.
+
+<!-- Rebuild trigger: Google OAuth client ID configuration -->
