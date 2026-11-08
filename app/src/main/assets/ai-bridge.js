@@ -42,6 +42,19 @@ const oldAnswer=window.answer;
 window.answer=async function(raw){
  const q=String(raw||'').trim();if(!q)return;
  const l=q.toLowerCase();
+ // Run supported app-opening commands on Android directly, not through the AI model.
+ const appCommands=[
+  {re:/(whatsapp|व्हाट्सएप)/i,pkg:'com.whatsapp',name:'WhatsApp'},
+  {re:/(youtube|यूट्यूब)/i,pkg:'com.google.android.youtube',name:'YouTube'},
+  {re:/(instagram|इंस्टाग्राम)/i,pkg:'com.instagram.android',name:'Instagram'}
+ ];
+ const appCommand=appCommands.find(c=>c.re.test(q)&&/(खोल|open|launch)/i.test(q));
+ if(appCommand){
+  let result='NOT_AVAILABLE';
+  try{if(window.JarvisNative&&window.JarvisNative.openApp)result=window.JarvisNative.openApp(appCommand.pkg)}catch(e){result='OPEN_FAILED'}
+  const message=result==='OK'?appCommand.name+' खोल रहा हूँ।':result==='NOT_INSTALLED'?appCommand.name+' इस फोन में इंस्टॉल नहीं है।':'ऐप खोलने का Android कंट्रोल उपलब्ध नहीं है।';
+  if(window.add)window.add(message);if(window.say)window.say(message);return;
+ }
  const local=/^(समय|कितने बजे|time|तारीख|दिनांक|date|आज कौन|नमस्ते|हेलो|hello|hi\b|तुम कौन|तुम्हारा नाम|who are you|मदद|help|क्या कर)/i.test(l);
  if(local&&typeof oldAnswer==='function'){oldAnswer(q);return}
  if(typeof window.add==='function')window.add('AI सोच रहा है…');
