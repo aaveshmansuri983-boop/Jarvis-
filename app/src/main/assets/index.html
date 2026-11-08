@@ -68,7 +68,7 @@ if(navigator.getBattery){navigator.getBattery().then(b=>{$('#battery').textConte
  document.body.appendChild(gate);
  const status=document.getElementById('ownerLoginStatus');
  window.onJarvisGoogleAuth=function(ok,message){
-   if(ok){localStorage.setItem('jarvis.owner.authenticated','yes');gate.style.display='none';if(window.add)window.add('Owner Google account verified. Premium access active.');}
+   if(ok){const parts=String(message||'').split('|');const email=parts[0]||'';const role=parts[1]||'free';localStorage.setItem('jarvis.owner.authenticated','yes');localStorage.setItem('jarvis.user.email',email);localStorage.setItem('jarvis.user.role',role);gate.style.display='none';if(window.add)window.add(role==='owner'?'Owner Google account verified. Premium access active — no subscription required.':'Google account verified. Free plan active.');}
    else{localStorage.removeItem('jarvis.owner.authenticated');gate.style.display='flex';status.textContent=message||'Sign-in failed. Please try again.';}
  };
  document.getElementById('ownerGoogleBtn').onclick=function(){
