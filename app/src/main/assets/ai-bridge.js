@@ -31,8 +31,10 @@ let seq=0, pending={};
 window.onJarvisAIResult=function(id,ok,payload){const p=pending[id];if(!p)return;delete pending[id];if(!ok){p.reject(new Error(payload||'AI request failed'));return}try{const data=JSON.parse(payload);const text=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content;if(!text)throw new Error('AI response empty');p.resolve(text)}catch(e){p.reject(e)}};
 window.jarvisAskCloud= function(prompt){
  const c=config();if(!c.apiKey)return Promise.reject(new Error('AI key set karne ke liye upar ⚙ AI dabayein.'));
+ const history=Array.from(document.querySelectorAll('#chat .msg')).filter(n=>n.textContent&&n.textContent!=='AI सोच रहा है…').slice(-13,-1).map(n=>(n.classList.contains('user')?'User: ':'Jarvis: ')+n.textContent);
+ const enriched=history.length?'Recent conversation (oldest first):\n'+history.join('\n')+'\n\nCurrent user message:\n'+prompt:prompt;
  if(!window.JarvisNative||!window.JarvisNative.askAI)return Promise.reject(new Error('Native AI network bridge abhi available nahi hai.'));
- return new Promise((resolve,reject)=>{const id=String(++seq);pending[id]={resolve,reject};window.JarvisNative.askAI(id,c.endpoint,c.model,c.apiKey,prompt);});
+ return new Promise((resolve,reject)=>{const id=String(++seq);pending[id]={resolve,reject};window.JarvisNative.askAI(id,c.endpoint,c.model,c.apiKey,enriched);});
 };
 const oldAnswer=window.answer;
 window.answer=async function(raw){
