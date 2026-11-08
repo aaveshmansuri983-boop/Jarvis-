@@ -34,7 +34,7 @@ jobs:
       - name: Build debug APK
         env:
           GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
-          JARVIS_OWNER_EMAIL: ${{ secrets.JARVIS_OWNER_EMAIL }}
+          JARVIS_OWNER_EMAIL: ${{ secrets.JARVIS_OWNER_GMAIL }}
         run: gradle --no-daemon assembleDebug
 
       - name: Upload APK
