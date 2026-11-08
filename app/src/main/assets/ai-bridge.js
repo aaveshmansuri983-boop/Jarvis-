@@ -1,6 +1,6 @@
 (function(){
 const KEY='jarvis.ai.config.v1';
-const defaults={provider:'openrouter',model:'openrouter/free',endpoint:'https://openrouter.ai/api/v1/chat/completions',apiKey:''};
+const defaults={provider:'groq',model:'openai/gpt-oss-120b',endpoint:'https://api.groq.com/openai/v1/chat/completions',apiKey:''};
 function config(){try{return Object.assign({},defaults,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){return {...defaults}}}
 function save(c){localStorage.setItem(KEY,JSON.stringify(c))}
 function el(tag,attrs,text){const n=document.createElement(tag);Object.entries(attrs||{}).forEach(([k,v])=>n.setAttribute(k,v));if(text)n.textContent=text;return n}
@@ -14,10 +14,10 @@ function setup(){
  const title=el('h2',{},'JARVIS CLOUD AI');title.style.marginTop='0';card.appendChild(title);
  const note=el('p',{},'Free-tier AI use karne ke liye provider ki API key chahiye. Key sirf is phone ke app storage mein rahegi; ise kisi ke saath share na karein. Free limits provider badal sakta hai.');note.style.cssText='font-size:13px;color:#9cc6dc;line-height:1.5';card.appendChild(note);
  const provider=el('select',{id:'aiProvider'});provider.style.cssText='width:100%;padding:12px;margin:7px 0;background:#041624;color:white;border:1px solid #1a6486;border-radius:10px';
- [['openrouter','OpenRouter (free models)'],['groq','Groq (free developer tier)']].forEach(([v,t])=>provider.appendChild(el('option',{value:v},t)));card.appendChild(provider);
+ [['groq','Groq (free developer tier)'],['openrouter','OpenRouter (free models)']].forEach(([v,t])=>provider.appendChild(el('option',{value:v},t)));card.appendChild(provider);
  const model=el('input',{id:'aiModel',placeholder:'Model ID'});model.style.cssText='width:100%;padding:12px;margin:7px 0;background:#041624;color:white;border:1px solid #1a6486;border-radius:10px';card.appendChild(model);
  const key=el('input',{id:'aiKey',type:'password',placeholder:'API key'});key.autocomplete='off';key.style.cssText=model.style.cssText;card.appendChild(key);
- const help=el('p',{},'OpenRouter model: openrouter/free  |  Groq model: llama-3.3-70b-versatile');help.style.cssText='font-size:11px;color:#83a9bf';card.appendChild(help);
+ const help=el('p',{},'Groq recommended model: openai/gpt-oss-120b  |  OpenRouter: openrouter/free');help.style.cssText='font-size:11px;color:#83a9bf';card.appendChild(help);
  const row=el('div');row.style.cssText='display:flex;gap:8px;margin-top:12px';
  const saveBtn=el('button',{type:'button'},'Save AI settings');saveBtn.style.cssText='flex:1;padding:12px;border:0;border-radius:10px;background:#20c9e8;color:#03111d;font-weight:700';
  const close=el('button',{type:'button'},'Close');close.style.cssText='padding:12px;border:1px solid #28617d;border-radius:10px;background:#0a2438;color:white';
@@ -25,7 +25,7 @@ function setup(){
  function load(){const c=config();provider.value=c.provider;model.value=c.model;key.value=c.apiKey;setEndpoint()}
  function setEndpoint(){model.placeholder=provider.value==='groq'?'llama-3.3-70b-versatile':'openrouter/free'}
  provider.onchange=setEndpoint;b.onclick=()=>{load();panel.style.display='flex'};close.onclick=()=>panel.style.display='none';panel.addEventListener('click',e=>{if(e.target===panel)panel.style.display='none'});
- saveBtn.onclick=()=>{const p=provider.value;save({provider:p,model:model.value.trim()||(p==='groq'?'llama-3.3-70b-versatile':'openrouter/free'),endpoint:p==='groq'?'https://api.groq.com/openai/v1/chat/completions':'https://openrouter.ai/api/v1/chat/completions',apiKey:key.value.trim()});panel.style.display='none';if(window.add)window.add('Cloud AI settings saved on this phone.');};
+ saveBtn.onclick=()=>{const p=provider.value;save({provider:p,model:model.value.trim()||(p==='groq'?'openai/gpt-oss-120b':'openrouter/free'),endpoint:p==='groq'?'https://api.groq.com/openai/v1/chat/completions':'https://openrouter.ai/api/v1/chat/completions',apiKey:key.value.trim()});panel.style.display='none';if(window.add)window.add('Cloud AI settings saved on this phone.');};
 }
 let seq=0, pending={};
 window.onJarvisAIResult=function(id,ok,payload){const p=pending[id];if(!p)return;delete pending[id];if(!ok){p.reject(new Error(payload||'AI request failed'));return}try{const data=JSON.parse(payload);const text=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content;if(!text)throw new Error('AI response empty');p.resolve(text)}catch(e){p.reject(e)}};
