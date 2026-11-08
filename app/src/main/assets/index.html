@@ -91,7 +91,7 @@ if(navigator.getBattery){navigator.getBattery().then(b=>{$('#battery').textConte
    }
  };
  // Keep the gate visible until the native Google session is re-verified on every launch.
- if(window.JarvisNative&&window.JarvisNative.checkGoogleSession)window.JarvisNative.checkGoogleSession();
+ status.textContent='Owner Google account se sign in karein.'; // Require an explicit Google login on every fresh app launch; do not silently bypass the login screen.
 })();
 </script>
 
