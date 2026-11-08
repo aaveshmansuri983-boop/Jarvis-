@@ -176,6 +176,23 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public String openApp(String packageName) {
+            try {
+                String[] allowed = {"com.whatsapp", "com.whatsapp.w4b", "com.google.android.youtube", "com.instagram.android"};
+                boolean permitted = false;
+                for (String item : allowed) if (item.equals(packageName)) permitted = true;
+                if (!permitted) return "BLOCKED";
+                android.content.Intent launch = getPackageManager().getLaunchIntentForPackage(packageName);
+                if (launch == null) return "NOT_INSTALLED";
+                launch.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(launch);
+                return "OK";
+            } catch (Exception e) {
+                return e.getMessage() == null ? "OPEN_FAILED" : e.getMessage();
+            }
+        }
+
+        @JavascriptInterface
         public void askAI(String requestId, String endpoint, String model, String apiKey, String prompt) {
             new Thread(() -> {
                 HttpURLConnection connection = null;
