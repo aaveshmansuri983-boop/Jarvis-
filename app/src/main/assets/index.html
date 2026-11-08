@@ -58,4 +58,26 @@ function startVoice(){if(!SR){add('इस Android WebView में voice recogn
 listen.onclick=startVoice;$('#voiceAction').onclick=startVoice;$('#wake').lastChild.textContent='Hey Jarvis (अभी बंद)';$('#wake').onclick=()=>{wake=false;try{rec&&rec.stop()}catch(e){}add('सुरक्षा के लिए हमेशा सुनने वाला Hey Jarvis मोड अभी बंद है। आवाज़ देने के लिए mic button खुद दबाएँ।');};
 if(navigator.getBattery){navigator.getBattery().then(b=>{$('#battery').textContent=Math.round(b.level*100)+'% battery';b.addEventListener('levelchange',()=>$('#battery').textContent=Math.round(b.level*100)+'% battery')}).catch(()=>$('#battery').textContent='Unavailable')}else $('#battery').textContent='Unavailable';
 </script><script src="ai-bridge.js"></script>
+
+<script>
+(function(){
+ const gate=document.createElement('div');
+ gate.id='ownerGate';
+ gate.style.cssText='position:fixed;z-index:100000;inset:0;background:radial-gradient(ellipse at 50% 35%,#0b3151,#01060d 75%);display:flex;align-items:center;justify-content:center;padding:22px';
+ gate.innerHTML='<section style="width:min(100%,420px);padding:26px;border:1px solid #31dcff;border-radius:22px;background:#071b2c;box-shadow:0 0 40px #12bfe855;text-align:center;color:#eafaff"><div style="font-size:42px;color:#31dcff">✦</div><h2 style="letter-spacing:3px">JARVIS OWNER LOGIN</h2><p style="color:#9cc6dc;line-height:1.6;font-size:13px">App use karne se pehle apne owner Google account se sign in karein. Sirf verified owner account ko Premium access milega.</p><button id="ownerGoogleBtn" style="width:100%;padding:15px;border:1px solid #31dcff;border-radius:13px;background:linear-gradient(120deg,#0a668d,#07324e);color:white;font-size:15px;font-weight:700">G  Continue with Google</button><p id="ownerLoginStatus" style="font-size:12px;color:#ffb5c0;min-height:20px;margin-top:13px"></p></section>';
+ document.body.appendChild(gate);
+ const status=document.getElementById('ownerLoginStatus');
+ window.onJarvisGoogleAuth=function(ok,message){
+   if(ok){localStorage.setItem('jarvis.owner.authenticated','yes');gate.style.display='none';if(window.add)window.add('Owner Google account verified. Premium access active.');}
+   else{localStorage.removeItem('jarvis.owner.authenticated');status.textContent=message||'Sign-in failed. Please try again.';}
+ };
+ document.getElementById('ownerGoogleBtn').onclick=function(){
+   status.textContent='Google sign-in khul raha hai…';
+   if(window.JarvisNative&&window.JarvisNative.startGoogleSignIn)window.JarvisNative.startGoogleSignIn();
+   else status.textContent='Google sign-in Android app mein hi available hai.';
+ };
+ if(localStorage.getItem('jarvis.owner.authenticated')==='yes')gate.style.display='none';
+})();
+</script>
+
 </body></html>
