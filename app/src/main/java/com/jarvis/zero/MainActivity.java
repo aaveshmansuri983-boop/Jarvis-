@@ -124,6 +124,26 @@ public class MainActivity extends Activity {
 
     private class CloudAiBridge {
 
+
+        @JavascriptInterface
+        public void checkGoogleSession() {
+            runOnUiThread(() -> {
+                if (googleClient == null) { authResult(false, "Google OAuth setup missing."); return; }
+                googleClient.silentSignIn().addOnCompleteListener(MainActivity.this, task -> {
+                    try {
+                        GoogleSignInAccount account = task.getResult(ApiException.class);
+                        if (account == null || account.getIdToken() == null) {
+                            authResult(false, "Please sign in with owner Google account.");
+                        } else {
+                            verifyGoogleToken(account.getIdToken());
+                        }
+                    } catch (Exception e) {
+                        authResult(false, "Please sign in with owner Google account.");
+                    }
+                });
+            });
+        }
+
         @JavascriptInterface
         public void startGoogleSignIn() {
             runOnUiThread(() -> {
