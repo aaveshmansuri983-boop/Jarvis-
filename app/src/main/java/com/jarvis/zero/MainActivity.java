@@ -2,6 +2,8 @@ package com.jarvis.zero;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.webkit.PermissionRequest;
@@ -126,6 +128,20 @@ public class MainActivity extends Activity {
 
     private class CloudAiBridge {
 
+
+        @JavascriptInterface
+        public String getClipboardText() {
+            try {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                if (clipboard == null || !clipboard.hasPrimaryClip()) return "";
+                ClipData clip = clipboard.getPrimaryClip();
+                if (clip == null || clip.getItemCount() == 0) return "";
+                CharSequence value = clip.getItemAt(0).coerceToText(MainActivity.this);
+                return value == null ? "" : value.toString();
+            } catch (Exception ignored) {
+                return "";
+            }
+        }
 
         @JavascriptInterface
         public void checkGoogleSession() {
