@@ -10,6 +10,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.JavascriptInterface;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import java.net.URLEncoder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -22,6 +29,8 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends Activity {
     private WebView web;
     private PermissionRequest pendingRequest;
+    private GoogleSignInClient googleClient;
+    private static final int GOOGLE_SIGN_IN = 72;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -33,6 +42,11 @@ public class MainActivity extends Activity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         web.setWebViewClient(new WebViewClient());
         web.addJavascriptInterface(new CloudAiBridge(), "JarvisNative");
+        if (!BuildConfig.GOOGLE_WEB_CLIENT_ID.isEmpty()) {
+            GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID).build();
+            googleClient = GoogleSignIn.getClient(this, options);
+        }
         web.setWebChromeClient(new WebChromeClient() {
             @Override public void onPermissionRequest(PermissionRequest request) {
                 runOnUiThread(() -> {
@@ -53,7 +67,71 @@ public class MainActivity extends Activity {
     }
 
 
+
+    private void authResult(boolean ok, String message) {
+        if (web != null) web.evaluateJavascript("window.onJarvisGoogleAuth(" + ok + "," +
+            JSONObject.quote(message) + ")", null);
+    }
+
+    private void verifyGoogleToken(String token) {
+        new Thread(() -> {
+            HttpURLConnection c = null;
+            try {
+                URL url = new URL("https://oauth2.googleapis.com/tokeninfo?id_token=" +
+                    URLEncoder.encode(token, "UTF-8"));
+                c = (HttpURLConnection) url.openConnection();
+                c.setConnectTimeout(12000);
+                c.setReadTimeout(12000);
+                int code = c.getResponseCode();
+                if (code != 200) throw new Exception("Google token verification failed.");
+                StringBuilder out = new StringBuilder();
+                try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line; while ((line = r.readLine()) != null) out.append(line);
+                }
+                JSONObject info = new JSONObject(out.toString());
+                String email = info.optString("email", "");
+                boolean verified = "true".equalsIgnoreCase(info.optString("email_verified", "false"));
+                String audience = info.optString("aud", "");
+                if (!verified || !BuildConfig.GOOGLE_WEB_CLIENT_ID.equals(audience)) {
+                    throw new Exception("Google account verification incomplete.");
+                }
+                if (BuildConfig.OWNER_EMAIL.isEmpty() || !BuildConfig.OWNER_EMAIL.equalsIgnoreCase(email)) {
+                    throw new Exception("Ye Google account Jarvis owner account nahi hai.");
+                }
+                runOnUiThread(() -> authResult(true, email));
+            } catch (Exception e) {
+                String msg = e.getMessage() == null ? "Google sign-in failed." : e.getMessage();
+                runOnUiThread(() -> authResult(false, msg));
+            } finally {
+                if (c != null) c.disconnect();
+            }
+        }).start();
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GOOGLE_SIGN_IN) {
+            try {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                if (account.getIdToken() == null) throw new Exception("Google ID token missing. OAuth setup check karein.");
+                verifyGoogleToken(account.getIdToken());
+            } catch (Exception e) {
+                authResult(false, e.getMessage() == null ? "Google sign-in cancelled." : e.getMessage());
+            }
+        }
+    }
+
     private class CloudAiBridge {
+
+        @JavascriptInterface
+        public void startGoogleSignIn() {
+            runOnUiThread(() -> {
+                if (googleClient == null) { authResult(false, "Google OAuth setup missing."); return; }
+                startActivityForResult(googleClient.getSignInIntent(), GOOGLE_SIGN_IN);
+            });
+        }
+
         @JavascriptInterface
         public void askAI(String requestId, String endpoint, String model, String apiKey, String prompt) {
             new Thread(() -> {
