@@ -38,10 +38,24 @@ window.jarvisAskCloud= function(prompt){
  if(!window.JarvisNative||!window.JarvisNative.askAI)return Promise.reject(new Error('Native AI network bridge abhi available nahi hai.'));
  return new Promise((resolve,reject)=>{const id=String(++seq);pending[id]={resolve,reject};window.JarvisNative.askAI(id,c.endpoint,c.model,c.apiKey,enriched);});
 };
+window.onJarvisWhatsAppResult=function(ok,message){
+ if(window.add)window.add(message||(ok?'WhatsApp ready.':'WhatsApp action failed.'));
+ if(window.say&&message)window.say(message);
+};
 const oldAnswer=window.answer;
 window.answer=async function(raw){
  const q=String(raw||'').trim();if(!q)return;
  const l=q.toLowerCase();
+ const whatsappMatch=q.match(/^(.+?)\s+ko\s+(?:whatsapp|व्हाट्सएप)\s+(?:pe|par|पर|पे)\s+(?:msg|message|मैसेज|संदेश)\s+(?:bhej(?:\s+do)?|send(?:\s+kar)?|kar(?:\s+do)?)\s*(.*)$/i);
+ if(whatsappMatch){
+  const recipient=whatsappMatch[1].trim();
+  const message=(whatsappMatch[2]||'').trim();
+  if(!message){if(window.add)window.add(recipient+' ko kya message bhejna hai? Message likhkar dobara boliye.');return;}
+  if(!window.JarvisNative||!window.JarvisNative.pickWhatsAppContact){if(window.add)window.add('WhatsApp Contacts integration is not available in this build.');return;}
+  if(window.add)window.add(recipient+' ko WhatsApp message ke liye Contacts khol raha hoon. List mein '+recipient+' select karein; message bhejne se pehle WhatsApp mein Send aap dabayenge.');
+  window.JarvisNative.pickWhatsAppContact(message);
+  return;
+ }
  // Run supported app-opening commands on Android directly, not through the AI model.
  const appCommands=[
   {re:/(whatsapp|व्हाट्सएप)/i,pkg:'com.whatsapp',name:'WhatsApp'},
