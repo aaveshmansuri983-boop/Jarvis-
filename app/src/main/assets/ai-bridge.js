@@ -7,7 +7,7 @@ function el(tag,attrs,text){const n=document.createElement(tag);Object.entries(a
 function setup(){
  if(document.getElementById('aiSetupButton'))return;
  const head=document.querySelector('header');if(!head)return;
- const b=el('button',{id:'aiSetupButton',type:'button'},'⚙ AI');b.style.cssText='border:1px solid #31dcff;background:#082b42;color:#dffaff;border-radius:20px;padding:9px 13px;font-weight:700';
+ const b=el('button',{id:'aiSetupButton',type:'button'},'⚙ API');b.style.cssText='border:1px solid #31dcff;background:#082b42;color:#dffaff;border-radius:20px;padding:9px 13px;font-weight:700';
  head.appendChild(b);
  const panel=el('div',{id:'aiSetupPanel'});panel.style.cssText='display:none;position:fixed;z-index:9999;inset:0;background:#000b;align-items:center;justify-content:center;padding:18px';
  const card=el('div');card.style.cssText='width:min(100%,480px);max-height:90vh;overflow:auto;background:#071b2c;border:1px solid #31dcff;border-radius:18px;padding:20px;color:#eafaff;box-shadow:0 0 35px #12bfe855';
@@ -16,7 +16,7 @@ function setup(){
  const provider=el('select',{id:'aiProvider'});provider.style.cssText='width:100%;padding:12px;margin:7px 0;background:#041624;color:white;border:1px solid #1a6486;border-radius:10px';
  [['groq','Groq (free developer tier)'],['openrouter','OpenRouter (free models)']].forEach(([v,t])=>provider.appendChild(el('option',{value:v},t)));card.appendChild(provider);
  const model=el('input',{id:'aiModel',placeholder:'Model ID'});model.style.cssText='width:100%;padding:12px;margin:7px 0;background:#041624;color:white;border:1px solid #1a6486;border-radius:10px';card.appendChild(model);
- const key=el('input',{id:'aiKey',type:'password',placeholder:'API key'});key.autocomplete='off';key.style.cssText=model.style.cssText;card.appendChild(key);
+ const key=el('input',{id:'aiKey',type:'password',placeholder:'Paste Groq / OpenRouter API key'});key.autocomplete='off';key.style.cssText=model.style.cssText;card.appendChild(key);
  const help=el('p',{},'Groq recommended model: openai/gpt-oss-120b  |  OpenRouter: openrouter/free');help.style.cssText='font-size:11px;color:#83a9bf';card.appendChild(help);
  const row=el('div');row.style.cssText='display:flex;gap:8px;margin-top:12px';
  const saveBtn=el('button',{type:'button'},'Save AI settings');saveBtn.style.cssText='flex:1;padding:12px;border:0;border-radius:10px;background:#20c9e8;color:#03111d;font-weight:700';
@@ -25,7 +25,7 @@ function setup(){
  function load(){const c=config();provider.value=c.provider;model.value=c.model;key.value=c.apiKey;setEndpoint()}
  function setEndpoint(){model.placeholder=provider.value==='groq'?'llama-3.3-70b-versatile':'openrouter/free'}
  provider.onchange=setEndpoint;b.onclick=()=>{load();panel.style.display='flex'};close.onclick=()=>panel.style.display='none';panel.addEventListener('click',e=>{if(e.target===panel)panel.style.display='none'});
- saveBtn.onclick=()=>{const p=provider.value;save({provider:p,model:model.value.trim()||(p==='groq'?'openai/gpt-oss-120b':'openrouter/free'),endpoint:p==='groq'?'https://api.groq.com/openai/v1/chat/completions':'https://openrouter.ai/api/v1/chat/completions',apiKey:key.value.trim()});panel.style.display='none';if(window.add)window.add('Cloud AI settings saved on this phone.');};
+ saveBtn.onclick=()=>{const p=provider.value;const apiKey=key.value.trim();if(!apiKey){if(window.add)window.add('API key khaali hai. Pehle apni provider key paste karein.');key.focus();return;}save({provider:p,model:model.value.trim()||(p==='groq'?'openai/gpt-oss-120b':'openrouter/free'),endpoint:p==='groq'?'https://api.groq.com/openai/v1/chat/completions':'https://openrouter.ai/api/v1/chat/completions',apiKey});panel.style.display='none';if(window.add)window.add('Cloud AI settings saved on this phone. API key is stored in this app WebView storage.');};
 }
 let seq=0, pending={};
 window.onJarvisAIResult=function(id,ok,payload){const p=pending[id];if(!p)return;delete pending[id];if(!ok){p.reject(new Error(payload||'AI request failed'));return}try{const data=JSON.parse(payload);const text=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content;if(!text)throw new Error('AI response empty');p.resolve(text)}catch(e){p.reject(e)}};
