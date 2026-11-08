@@ -109,6 +109,10 @@ public class MainActivity extends Activity {
     @Override protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GOOGLE_SIGN_IN) {
+            if (resultCode != RESULT_OK || data == null) {
+                authResult(false, "Google sign-in cancel hua ya screen se response nahi mila. Dobara try karein.");
+                return;
+            }
             try {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -146,7 +150,12 @@ public class MainActivity extends Activity {
         public void startGoogleSignIn() {
             runOnUiThread(() -> {
                 if (googleClient == null) { authResult(false, "Google OAuth setup missing."); return; }
-                startActivityForResult(googleClient.getSignInIntent(), GOOGLE_SIGN_IN);
+                try {
+                    startActivityForResult(googleClient.getSignInIntent(), GOOGLE_SIGN_IN);
+                } catch (Exception e) {
+                    authResult(false, "Google sign-in screen nahi khul saki: " +
+                        (e.getMessage() == null ? "Unknown error" : e.getMessage()));
+                }
             });
         }
 
